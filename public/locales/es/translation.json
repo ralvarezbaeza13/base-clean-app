@@ -4,5 +4,10 @@
   "helloWorld": "Hola Mundo",
   "pokemonList": "Lista de Pokémon",
   "loading": "Cargando...",
-  "error": "Error"
+  "error": "Error",
+  "addDay":"AGREGAR",
+  "removeDay":"QUITAR",
+  "dateDifference": "días" ,
+  "calculate": "CALCULAR"
+
 }

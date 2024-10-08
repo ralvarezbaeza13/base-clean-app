@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
-import { PokemonRepository } from '../../domain/repositories/PokemonRepository';
+import { PokemonRepository } from '../../domain/repository/PokemonRepository';
 import { ApiService } from '../services/ApiService';
-import { Pokemon } from '../../domain/entities/Pokemon';
+import { Pokemon } from '../../domain/model/Pokemon';
 
 @injectable()
 export class PokemonRepositoryImpl implements PokemonRepository {

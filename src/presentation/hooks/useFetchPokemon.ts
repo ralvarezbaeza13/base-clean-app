@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { FetchPokemonUseCase } from '../../usecases/FetchPokemonUseCase';
-import { Pokemon } from '../../domain/entities/Pokemon';
-import { container } from '../../infraestructure/di/DependencyInjection';
-import { TYPES } from '../../infraestructure/di/Types';
+import { useEffect, useState } from "react";
+import { FetchPokemonUseCase } from "../../domain/usecase/FetchPokemonUseCase";
+import { Pokemon } from "../../domain/model/Pokemon";
+import { container } from "../../presentation/di/DependencyInjection";
+import { TYPES } from "../../presentation/di/Types";
 
 export const useFetchPokemon = () => {
   const [data, setData] = useState<Pokemon[]>([]);
@@ -10,7 +10,9 @@ export const useFetchPokemon = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPokemonUseCase = container.get<FetchPokemonUseCase>(TYPES.FetchPokemonUseCase);
+    const fetchPokemonUseCase = container.get<FetchPokemonUseCase>(
+      TYPES.FetchPokemonUseCase
+    );
 
     const fetchData = async () => {
       try {
@@ -23,7 +25,7 @@ export const useFetchPokemon = () => {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError('An unknown error occurred');
+          setError("An unknown error occurred");
         }
         setLoading(false);
       }

@@ -1,5 +1,5 @@
-import { PokemonRepositoryImpl } from '../infraestructure/data/PokemonRepositoryImpl';
-import { Pokemon } from '../domain/entities/Pokemon';
+import { PokemonRepositoryImpl } from "../../infraestructure/data/PokemonRepositoryImpl";
+import { Pokemon } from "../model/Pokemon";
 
 export class FetchPokemonUseCase {
   private pokemonRepository: PokemonRepositoryImpl;

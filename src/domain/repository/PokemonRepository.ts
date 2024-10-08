@@ -1,4 +1,4 @@
-import { Pokemon } from '../entities/Pokemon';
+import { Pokemon } from '../model/Pokemon';
 
 export interface PokemonRepository {
   fetchPokemon(): Promise<Pokemon[]>;
