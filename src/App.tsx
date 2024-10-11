@@ -1,16 +1,25 @@
 import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Importa el Router y las Rutas
 import "./App.css";
 import PokemonPage from "./presentation/pages/PokemonPage";
+import MapPage from "./presentation/pages/MapPage"; // Importamos la nueva página del mapa
 import "./i18n/config"; // Importa la configuración de i18next
 
 const App: React.FC = () => {
   return (
-    <div className="App min-h-screen bg-gray-100 p-4">
-      <main className="bg-white shadow-md p-4 rounded-lg">
-        <PokemonPage />
-      </main>
-      <footer className="mt-4 text-center"></footer>
-    </div>
+    <Router>
+      <div>
+        <main>
+          <Routes>
+            <Route path="/" element={<PokemonPage />} />{" "}
+            {/* Ruta para PokemonPage */}
+            <Route path="/map" element={<MapPage />} />{" "}
+            {/* Ruta para MapPage */}
+          </Routes>
+        </main>
+        <footer></footer>
+      </div>
+    </Router>
   );
 };
 

@@ -1,2 +1,1 @@
-export class Element implements Object{
-}
+export class Element extends Object {}

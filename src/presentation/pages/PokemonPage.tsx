@@ -3,6 +3,7 @@ import { useFetchPokemon } from "../hooks/useFetchPokemon";
 import { useFetchActs } from "../hooks/ruleEngine/useRuleEngine";
 import { useDateHandler } from "../hooks/useDateHandler";
 import { useTranslationContext } from "../../context/TranslationProvider";
+import { useNavigate } from "react-router-dom"; // Importamos el hook de navegación
 import PokemonList from "../components/PokemonList";
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
@@ -30,12 +31,13 @@ const PokemonPage: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPokemon, setSelectedPokemon] = useState<string | null>(null);
+  const navigate = useNavigate(); // Hook para navegar entre rutas
 
   const handlePokemonClick = (name: string) => {
     setSelectedPokemon(name);
     setIsModalOpen(true);
   };
-  console.log(actsData);
+
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
@@ -104,6 +106,18 @@ const PokemonPage: React.FC = () => {
           {t("calculate")}
         </button>
       </div>
+
+      {/* Botón para navegar a la página del mapa */}
+      <div className="text-center my-4">
+        <button
+          onClick={() => navigate("/map")} // Navega a la página del mapa
+          className="px-4 py-2 bg-green-500 text-white rounded shadow-sm hover:bg-green-600 focus:border-green-500 focus:ring focus:ring-green-200 mb-4"
+          aria-label="Go to Map Page"
+        >
+          {t("viewMap")}
+        </button>
+      </div>
+
       <Loading isOpen={loading} />
       {error && (
         <p className="text-center text-red-500">
