@@ -1,175 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { Dialog } from "@headlessui/react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef } from "react";
+import QRCode from "react-qr-code";
 
-const MapPage: React.FC = () => {
-  // Set the first URL as the default
-  const [currentUrl, setCurrentUrl] = useState<string>(
-    "https://app.mappedin.com/map/6707ebf0cda55a000ba37320?floor=m_7bb20b220c93cf35"
-  );
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
-  const navigate = useNavigate();
+const CustomBottomSheet: React.FC = () => {
+  const bottomSheetRef = useRef<HTMLDivElement>(null);
 
-  const urls = [
-    {
-      name: "Mappedin Map 1",
-      url: "https://app.mappedin.com/map/6707ebf0cda55a000ba37320?floor=m_7bb20b220c93cf35",
-    },
-    {
-      name: "Mappedin Map 2",
-      url: "https://another.map.example.com/map2",
-    },
-    {
-      name: "Mappedin Map 3",
-      url: "https://another.map.example.com/map3",
-    },
-  ];
-
-  const handleUrlChange = (url: string) => {
-    setCurrentUrl(url);
-    setIsModalOpen(false); // Close modal after selecting map
-    setLoading(true); // Show loader again on URL change
-  };
-
-  const handleIframeLoad = () => {
-    setTimeout(() => {
-      setLoading(false); // Hide the loader after iframe content has loaded
-    }, 1000); // Small timeout to ensure rendering completion
-  };
-
-  // Listen for the "beforeinstallprompt" event to trigger the PWA install option
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e); // Store the event for triggering later
-      setShowInstallPrompt(true); // Show the install button
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
-    };
-  }, []);
-
-  const handleInstallClick = () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt(); // Show the install prompt
-      deferredPrompt.userChoice.then((choiceResult: any) => {
-        if (choiceResult.outcome === "accepted") {
-          console.log("User accepted the PWA install prompt");
-        } else {
-          console.log("User dismissed the PWA install prompt");
-        }
-        setDeferredPrompt(null); // Clear the deferred prompt
-        setShowInstallPrompt(false); // Hide the install button
-      });
-    }
-  };
+  const defaultUrl = "https://app.mappedin.com/map/6707ebf0cda55a000ba37320";
 
   return (
-    <div className="w-full h-screen flex flex-col">
-      {loading && (
-        <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50">
-          {/* Loader Text */}
-          <h1 className="text-2xl font-bold mb-4 animate-pulse">Cargando...</h1>
+    <div className="w-full h-screen flex flex-col bg-gray-50 relative">
+      <nav className="bg-blue-900 p-4 text-white flex justify-between items-center z-10">
+        <h1 className="text-xl font-semibold">Explora el Mapa</h1>
+      </nav>
 
-          {/* Animated "The Palace Company" */}
-          <h2 className="text-4xl font-bold text-gray-800 animate-palace-animation">
-            The Palace Company
+      <div className="flex-grow relative">
+        <iframe
+          src={defaultUrl}
+          title="Mapa Interactivo"
+          className="w-full h-full border-0"
+          allowFullScreen
+        />
+      </div>
+
+      {/* Bottom Sheet más pequeño con contenido alineado a la izquierda */}
+      <div
+        ref={bottomSheetRef}
+        className="fixed inset-x-0 bottom-0 bg-white rounded-t-3xl shadow-lg h-[25%] max-h-[350px] overflow-y-auto"
+        style={{ zIndex: 20 }}
+      >
+        <div className="p-4  items-center">
+          <h2 className="text-3xl font-bold text-blue-900 mt-4">
+            Lleva el Mapa Contigo 📲
           </h2>
-
-          {/* Loader Animation */}
-          <div className="mt-6">
-            <div className="w-16 h-16 border-4 border-blue-500 border-dotted rounded-full animate-spin"></div>
-          </div>
-        </div>
-      )}
-
-      <div className="w-full h-full flex flex-col">
-        <nav className="flex items-center justify-between bg-gray-800 p-4 text-white">
-          <button
-            className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded"
-            onClick={() => navigate("/")} // Always go to Home
-          >
-            Back to Home
-          </button>
-          <button
-            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
-            onClick={() => setIsModalOpen(true)} // Open modal to select map
-          >
-            Select Map
-          </button>
-
-          {/* Show Install PWA Button if eligible */}
-          {showInstallPrompt && (
-            <button
-              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded"
-              onClick={handleInstallClick} // Trigger PWA install
-            >
-              Install App
-            </button>
-          )}
-        </nav>
-
-        {/* WebView or iframe to display the selected map */}
-        <div className="flex-grow">
-          {currentUrl && (
-            <iframe
-              src={currentUrl}
-              title="Interactive Map"
-              className="w-full h-full border-0"
-              allowFullScreen
-              onLoad={handleIframeLoad} // Trigger loader removal when iframe loads
-            />
-          )}
         </div>
 
-        {/* Modal for Map Selection */}
-        <Dialog
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          className="fixed z-10 inset-0 overflow-y-auto"
-        >
-          <div className="flex items-center justify-center min-h-screen px-4 sm:px-0">
-            <div className="fixed inset-0 bg-black opacity-30" />
-            <div className="relative bg-white rounded-lg shadow-lg w-full sm:w-1/3 max-w-full sm:max-w-md">
-              <div className="p-6">
-                <Dialog.Title className="text-lg font-medium text-gray-900">
-                  Select a Map
-                </Dialog.Title>
-                <div className="mt-4 space-y-4">
-                  {urls.map((url) => (
-                    <button
-                      key={url.url}
-                      className="w-full px-4 py-2 text-left bg-gray-200 hover:bg-gray-300 rounded-lg"
-                      onClick={() => handleUrlChange(url.url)}
-                    >
-                      {url.name}
-                    </button>
-                  ))}
-                </div>
-                <div className="mt-6 text-right">
-                  <button
-                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                    onClick={() => setIsModalOpen(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Dialog>
+        <div className="p-4 flex flex-col items-center space-y-4">
+          <p className="text-gray-600">
+            Escanea este código QR para abrir el mapa en tu dispositivo.
+          </p>
+          <QRCode value={defaultUrl} size={180} className="shadow-lg" />
+        </div>
       </div>
     </div>
   );
 };
 
-export default MapPage;
+export default CustomBottomSheet;
